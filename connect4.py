@@ -54,8 +54,8 @@ def mark_board(last, column):
 def play():
     while True:
         try:
-            column = int(raw_input("Pick a column (1-7): ")) - 1
-            if column >= 1 and column <= boardwidth:
+            column = int(input("Pick a column (1-7): ")) - 1
+            if column >= 0 and column <= boardwidth:
                 for i in range(6):
                     if board[i][column] == "_":
                         last = i
