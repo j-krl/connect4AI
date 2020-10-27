@@ -26,22 +26,22 @@ def generate_board(boardheight, boardwidth):
             board.append(label)
 
 def start():
-    print "Let's play Connect Four!"
+    print ("Let's play Connect Four!")
     start_seq = ["3",".",".","2",".",".","1",".","."]
     for i in start_seq:
         time.sleep(0.333)
-        print i,
+        print(i),
 
 def print_board(board):
-    print "\n"
+    print("\n")
     for row in board:
-        print " ".join(row)
-    print "\n"
+        print(" ".join(row))
+    print("\n")
         
 def toggle(turn):
     mask = 0b11
     turn = turn ^ mask
-    print "It is player %s's turn." % turn
+    print("It is player %s's turn." % turn)
     return turn
 
 def mark_board(last, column):
@@ -64,7 +64,7 @@ def play():
                 raise "You picked a column outside the board!"
             break
         except:
-            print("Not a valid number! Please try again...")
+            print("Not a valid input!")
 
 def check_winner(board, player):
     #check horizontal spaces
@@ -103,7 +103,7 @@ while winner == False:
     winner = check_winner(board, str(whos_turn))
     
 if winner == True:
-    print "Player " + str(whos_turn) + " wins!"
+    print("Player " + str(whos_turn) + " wins!")
 
 
 
