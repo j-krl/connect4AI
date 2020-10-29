@@ -5,19 +5,25 @@
 import time
 import random
 
-
-board = [] 
-label = []
+board = []
+plain_board = [] #Same board without piece coloring. Used for win checking.
 whos_turn = 0b10
 winner = False
 draw_counter = 0
-last = 0
 column = 0
 boardheight = 6
 boardwidth = 7
 
+#ANSI Color Globals
+#Should probably do this with a Python library that is more universal as ANSI doesn't work the same on all terminals.
+class colors:
+	RESET = "\033[0m"
+	RED = "\033[1;31;40m"
+	YELLOW = "\033[1;33;40m"
+
 #generate empty board
-def generate_board(boardheight, boardwidth):
+def generate_board(board, boardheight, boardwidth):
+	label = []
 	for i in range(8):
 		if i < boardheight:
 			board.append(["_"] * boardwidth)
@@ -56,9 +62,11 @@ def mark_board(column):
 			return
 	
 	if whos_turn == 0b01:
-		board[row][column] = "1"
+		board[row][column] = colors.RED + "1" + colors.RESET
+		plain_board[row][column] = "1"
 	else:
-		board[row][column] = "2"
+		board[row][column] = colors.YELLOW + "2" + colors.RESET
+		plain_board[row][column] = "2"
 	print_board(board)
 
 def play():
@@ -72,6 +80,9 @@ def play():
 	else:
 		column = random.randint(0,6)
 		mark_board(column)
+
+def ai():
+	
 
 def check_winner(board, player):
 	#check horizontal spaces
@@ -101,14 +112,15 @@ def check_winner(board, player):
 	return False
 	
 start()
-generate_board(boardheight, boardwidth)
+generate_board(board, boardheight, boardwidth)
+generate_board(plain_board, boardheight, boardwidth)
 print_board(board)
 
 while winner == False and draw_counter != 42:
 	whos_turn = toggle(whos_turn)
 	play()
 	draw_counter += 1
-	winner = check_winner(board, str(whos_turn))
+	winner = check_winner(plain_board, str(whos_turn))
 
 if winner == True:
 	print("Player " + str(whos_turn) + " wins!")
