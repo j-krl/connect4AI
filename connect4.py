@@ -5,10 +5,12 @@
 import time
 import random
 
+
 board = [] 
 label = []
 whos_turn = 0b10
 winner = False
+draw_counter = 0
 last = 0
 column = 0
 boardheight = 6
@@ -48,7 +50,8 @@ def mark_board(column):
 			row = i
 			break
 		if i == 0:
-			print("That column is full!")
+			if whos_turn == 0b01: 
+				print("That column is full!")
 			play()
 			return
 	
@@ -101,14 +104,17 @@ start()
 generate_board(boardheight, boardwidth)
 print_board(board)
 
-while winner == False:
+while winner == False and draw_counter != 42:
 	whos_turn = toggle(whos_turn)
 	play()
+	draw_counter += 1
 	winner = check_winner(board, str(whos_turn))
-	
+
 if winner == True:
 	print("Player " + str(whos_turn) + " wins!")
 
+else:
+	print("The game is a draw")
 
 
 
