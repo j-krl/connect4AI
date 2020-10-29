@@ -74,25 +74,25 @@ def check_winner(board, player):
 	#check horizontal spaces
 	for y in range(boardheight):
 		for x in range(boardwidth - 3):
-			if board[x][y] == player and board[x+1][y] == player and board[x+2][y] == player and board[x+3][y] == player:
+			if board[y][x] == player and board[y][x+1] == player and board[y][x+2] == player and board[y][x+3] == player:
 				return True
 
 	#check vertical spaces
 	for x in range(boardwidth):
 		for y in range(boardheight - 3):
-			if board[x][y] == player and board[x][y+1] == player and board[x][y+2] == player and board[x][y+3] == player:
+			if board[y][x] == player and board[y+1][x] == player and board[y+2][x] == player and board[y+3][x] == player:
 				return True
 
 	#check / diagonal spaces
 	for x in range(boardwidth - 3):
 		for y in range(3, boardheight):
-			if board[x][y] == player and board[x+1][y-1] == player and board[x+2][y-2] == player and board[x+3][y-3] == player:
+			if board[y][x] == player and board[y-1][x+1] == player and board[y-2][x+2] == player and board[y-3][x+3] == player:
 				return True
 
 	#check \ diagonal spaces
 	for x in range(boardwidth - 3):
 		for y in range(boardheight - 3):
-			if board[x][y] == player and board[x+1][y+1] == player and board[x+2][y+2] == player and board[x+3][y+3] == player:
+			if board[y][x] == player and board[y+1][x+1] == player and board[y+2][x+2] == player and board[y+3][x+3] == player:
 				return True
 
 	return False
