@@ -5,7 +5,7 @@
 import numpy as np
 import time
 import random
-import conn4ai
+from conn4ai import ai_move
 
 ROWS = 12
 COLS = 13
@@ -44,7 +44,7 @@ def generate_board():
 				board[i, j] = 3
 	return board
 
-def make_printable_board(board):
+def print_board(board):
 	printable_board = []
 
 	for i in range(8):
@@ -57,9 +57,9 @@ def make_printable_board(board):
 			if board[i][j] == 0:
 				element = "_"
 			elif board[i][j] == 1:
-				element = colors.RED + "1" + colors.RESET
+				element = colors.RED + "X" + colors.RESET
 			elif board[i][j] == 2:
-				element = colors.YELLOW + "2" + colors.RESET
+				element = colors.YELLOW + "O" + colors.RESET
 
 			printable_board[i - 3].append(element)
 	
@@ -67,11 +67,8 @@ def make_printable_board(board):
 		printable_board[6].append("^")
 		printable_board[7].append(str(i - 2))
 	
-	return printable_board
-
-def print_board(board):
 	print("\n")
-	for row in board:
+	for row in printable_board:
 		print(" ".join(row))
 	print("\n")
 
@@ -98,64 +95,56 @@ def mark_board(board, column):
 	else:
 		board[row][column] = 2
 	
-	print_board(make_printable_board(board))
+	print_board(board)
+	return check_winner(board, [row, column], turn)
 
 def play(board):
 	if turn == 0b01:
-		column = int(input("Pick a column (1-7): ")) + 3
+		column = int(input("Pick a column (1-7): ")) + 2
 		if column in LEGAL_COLS:
-			mark_board(board, column)
+			return mark_board(board, column)
 		else:
 			print("You picked a column outside the board!")
 			play(board)
 	else:
-		ai_move(2, board, turn)	
-		mark_board(board, column)
+		column = int(ai_move(4, board, turn))
+		return mark_board(board, column)
 
-def check_winner(board, player):
-	#check horizontal spaces
-	for y in range(LEGAL_ROWS):
-		for x in range(LEGAL_COLS - 3):
-			if board[y][x] == player and board[y][x+1] == player and board[y][x+2] == player and board[y][x+3] == player:
-				return True
+def check_winner(board, square, player):
+	# Returns True if a player won the game on the last move
+	ROW = square[0]
+	COL = square[1]
+	piece = 0 # Currently selected piece
 
-	#check vertical spaces
-	for x in range(LEGAL_COLS):
-		for y in range(LEGAL_ROWS - 3):
-			if board[y][x] == player and board[y+1][x] == player and board[y+2][x] == player and board[y+3][x] == player:
-				return True
+	for n in range(4):
+		for	i in range(4):
+			for j in range(4):
 
-	#check / diagonal spaces
-	for x in range(LEGAL_COLS - 3):
-		for y in range(3, LEGAL_ROWS):
-			if board[y][x] == player and board[y-1][x+1] == player and board[y-2][x+2] == player and board[y-3][x+3] == player:
-				return True
+				if n == 0: piece = board[ROW, COL - i + j] # Horizontal
+				elif n == 1: piece = board[ROW - i + j, COL] # Vertical
+				elif n == 2: piece = board[ROW + i - j, COL - i + j] # Diagonal /
+				elif n == 3: piece = board[ROW - i + j, COL - i + j] # Diagonal \
 
-	#check \ diagonal spaces
-	for x in range(LEGAL_COLS - 3):
-		for y in range(LEGAL_ROWS - 3):
-			if board[y][x] == player and board[y+1][x+1] == player and board[y+2][x+2] == player and board[y+3][x+3] == player:
-				return True
+				if piece != player:
+					break
 
-	return False
+				if j == 3:
+					return True
 	
+	return False
+
 board = generate_board()
-print_board(make_printable_board(board))
+print_board(board)
 
 while winner == False and draw_counter != 42:
 	turn = toggle(turn)
-	play(board)
+	winner = play(board)
 	draw_counter += 1
-	winner = check_winner(board, str(turn))
 
 if winner == True:
+
 	print("Player " + str(turn) + " wins!")
 
 else:
 	print("The game is a draw")
-
-
-
-
-
 
