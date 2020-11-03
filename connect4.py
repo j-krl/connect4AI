@@ -4,6 +4,7 @@
 
 import numpy as np
 import time
+import sys
 import random
 from conn4ai import ai_move
 
@@ -17,6 +18,10 @@ LEGAL_COLS = [3, 4, 5, 6, 7, 8, 9]
 turn = 0b10
 winner = False
 draw_counter = 0
+
+passes = 2
+if len(sys.argv) > 1:
+	passes = int(sys.argv[1])
 
 class colors:
 	"""
@@ -107,7 +112,7 @@ def play(board):
 			print("You picked a column outside the board!")
 			play(board)
 	else:
-		column = int(ai_move(4, board, turn))
+		column = int(ai_move(passes, board, turn))
 		return mark_board(board, column)
 
 def check_winner(board, square, player):
@@ -133,6 +138,8 @@ def check_winner(board, square, player):
 	
 	return False
 
+# Main Function:
+print("Let's play Connect Four!")
 board = generate_board()
 print_board(board)
 
@@ -142,7 +149,6 @@ while winner == False and draw_counter != 42:
 	draw_counter += 1
 
 if winner == True:
-
 	print("Player " + str(turn) + " wins!")
 
 else:

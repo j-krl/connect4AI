@@ -55,7 +55,7 @@ def check_adjacent(board, square, player):
 	count = 0 # Temporary count of connected piece on a single pass of the inner "j" loop
 	total = 0 # Cumulative score_node of position
 	piece = 0 # Piece on currently selected square
-
+	
 	for n in range(4):
 		for	i in range(4):
 			for j in range(4):
@@ -92,18 +92,19 @@ def play_node(board, player):
 	
 	for i in open_cols:
 		square = open_square(board, i)
-		score_nodes.append(check_adjacent(board, square, player))
 		new_board = deepcopy(board)
 		boards.append(mark_board(new_board, player, i))
+		score_nodes.append(check_adjacent(new_board, square, player))
 
 	return [open_cols, boards, score_nodes]
 
-def plant_tree(passes, board, player):
+def plant_tree(passes, board, opp_player):
 	# Derive game tree through specified number of recursive passes
 	# Final tree structure will be of the form [node, [level]] with level being a list of all the same shaped nodes below it.
-	new_player = opposing_player(player)
+	# TODO: Fix arguments so that it accepts 'player' rather than 'opp_player'
+	new_player = opposing_player(opp_player)
 	branches = []
-	node = play_node(board, player)
+	node = play_node(board, opp_player)
 
 	if passes:
 		for i in range(len(node[0])):
@@ -116,7 +117,10 @@ def score_tree(passes, tree):
 	tree is the return value of plant_tree
 	"""
 	score_node = [0, 0]
-	score_node[0] = max(tree[0][2])
+	if len(tree[0][2]):
+		score_node[0] = max(tree[0][2])
+	else:
+		score_node[0] = 0
 
 	for i in range(len(tree[1])): 
 		prev_score = score_tree(passes - 1, tree[1][i])
@@ -126,14 +130,16 @@ def score_tree(passes, tree):
 		if not is_even(passes):
 			tree[0][2][i] -= prev_score[0]
 	
-	print(tree[0][2])
-	score_node[1] = tree[0][0][tree[0][2].index(max(tree[0][2]))]
+	if len(tree[0][2]):
+		score_node[1] = tree[0][0][tree[0][2].index(max(tree[0][2]))]
+	else:
+		score_node[1] = tree[0][0][0]
 
 	return score_node
 
 def ai_move(passes, board, player):
 	# The final AI method that returns the move the AI makes!
-	tree = deepcopy(plant_tree(passes, board, player))
+	tree = deepcopy(plant_tree(passes, board, opposing_player(player)))
 	branch = score_tree(passes, tree)
 	
 	return branch[1]
