@@ -122,7 +122,7 @@ def check_winner(board, square, player):
 	piece = 0 # Currently selected piece
 
 	for n in range(4):
-		for	i in range(4):
+		for i in range(4):
 			for j in range(4):
 
 				if n == 0: piece = board[ROW, COL - i + j] # Horizontal
